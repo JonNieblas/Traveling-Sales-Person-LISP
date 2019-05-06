@@ -7,7 +7,7 @@
 ;    (genTours 4)
 ;    ((1 2 3 4) (1 2 4 3) (1 3 2 4) (1 3 4 2) (1 4 2 3) (1 4 3 2))
 (define (genTours n)
-  (println "genTours")
+  (fix-list '() (permutations (build-list n 1)))
 )
 
 ; Returns length of tour from list of n vertices
@@ -31,4 +31,33 @@
       0
       (+ 1 (count (cdr list)))
    )
+)
+
+; Returns a list from 1 to n
+(define (build-list n p)
+  (if (< n p)
+      null
+      (cons p (build-list n (+ p 1)))
+  )
+)
+
+; Return list that doesn't have val as car
+(define (fix-list li original)
+  (if (null? original)
+      li
+      (if (null? li)
+          (fix-list (cons (car original) li) (cdr original))
+          (if (eq? 1 (car (next-list original)))
+              (fix-list (cons (next-list original) li) (cdr original))
+              (fix-list li (cdr original))
+          )
+      )
+  )
+)
+
+(define (next-list li)
+  (if (null? (cdr li))
+      (car li)
+      (cadr li)
+  )
 )
