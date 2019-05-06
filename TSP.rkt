@@ -16,9 +16,15 @@
 ;    (score '((3 1) (8 2) (5 4) (2 6) (6 6) (4 8)) '(1 2 3 4 5 6))
 ;    26.22
 (define (score vertices tour)
-  (println "score")
-
-  
+  (if (null? (cdr tour))
+      ; if last stop on tour, connect back to one.
+      (+ (pyth
+          (get-vertex vertices 1 1)
+          (get-vertex vertices (first tour) 1)))
+      (+ (pyth
+          (get-vertex vertices (first tour) 1) (get-vertex vertices (second tour) 1))
+         (score vertices (cdr tour)))
+  )
 )
 
 ; Returns an optimal tour from a list of positions.
@@ -48,22 +54,27 @@
   (if (null? original)
       li
       (if (null? li)
-          (fix-list (cons (car original) li) (cdr original))
-          (if (eq? 1 (car (next-perm original)))
-              (fix-list (cons (next-perm original) li) (cdr original))
+          (fix-list (cons (first original) li) (cdr original))
+          (if (eq? 1 (first (next original)))
+              (fix-list (cons (next original) li) (cdr original))
               (fix-list li (cdr original))
           )
       )
   )
 )
 
-; Get's the next permutation in the list.
+; Get's the next item in a list.
 ; Avoids contract violations.
-(define (next-perm li)
+(define (next li)
   (if (null? (cdr li))
       (car li)
       (cadr li)
   )
+)
+
+; Get's the first item in a list.
+(define (first li)
+  (car li)
 )
 
 ; Gets the vertex from a list in position n
@@ -78,21 +89,11 @@
 (define (pyth v1 v2)
   (sqrt
    (+
-    (get-square (get-x v1) (get-x v2))
-    (get-square (get-y v1) (get-y v2))))
+    (get-square (first v1) (first v2))
+    (get-square (next v1) (next v2))))
 )
 
 ; Computes the square of x and y vertice values
 (define (get-square v1 v2)
   (expt (- v2 v1) 2)
-)
-  
-; Returns x-val from a vertex
-(define (get-x v)
-  (car v)
-)
-
-; Returns y-val from a vertex
-(define (get-y v)
-  (cadr v)
 )
