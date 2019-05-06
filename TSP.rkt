@@ -29,8 +29,28 @@
 
 ; Returns an optimal tour from a list of positions.
 ; Driver function.
-(define (etsp positions)
-  (println "etsp")
+(define (etsp vertices)
+  (if (null? vertices)
+      '()
+      (find-best vertices (genTours (count vertices)) '() 1000)
+  )
+)
+
+; Finds the optimal tour (lowest value to travel across each node)
+(define (find-best vertices perms bestLI bestScore)
+  (if (null? perms)
+      bestLI
+      (if (<= (score vertices (first perms)) bestScore)
+          (find-best vertices
+                     (cdr perms)
+                     (first perms)
+                     (score vertices (first perms)))
+          (find-best vertices
+                     (cdr perms)
+                     bestLI
+                     bestScore)
+      )
+   )
 )
 
 ; Returns the number of items in a list.
