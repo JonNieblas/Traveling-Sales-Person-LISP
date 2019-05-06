@@ -17,6 +17,8 @@
 ;    26.22
 (define (score vertices tour)
   (println "score")
+
+  
 )
 
 ; Returns an optimal tour from a list of positions.
@@ -33,7 +35,7 @@
    )
 )
 
-; Returns a list from 1 to n
+; Returns a list from 1 to n.
 (define (build-list n p)
   (if (< n p)
       null
@@ -41,23 +43,56 @@
   )
 )
 
-; Return list that doesn't have val as car
+; Return list that doesn't have val as car.
 (define (fix-list li original)
   (if (null? original)
       li
       (if (null? li)
           (fix-list (cons (car original) li) (cdr original))
-          (if (eq? 1 (car (next-list original)))
-              (fix-list (cons (next-list original) li) (cdr original))
+          (if (eq? 1 (car (next-perm original)))
+              (fix-list (cons (next-perm original) li) (cdr original))
               (fix-list li (cdr original))
           )
       )
   )
 )
 
-(define (next-list li)
+; Get's the next permutation in the list.
+; Avoids contract violations.
+(define (next-perm li)
   (if (null? (cdr li))
       (car li)
       (cadr li)
   )
+)
+
+; Gets the vertex from a list in position n
+(define (get-vertex li n p)
+  (if (= p n)
+      (car li)
+      (get-vertex (cdr li) n (+ p 1))
+  )
+)
+
+; Computes the length of the edge between two vertices.
+(define (pyth v1 v2)
+  (sqrt
+   (+
+    (get-square (get-x v1) (get-x v2))
+    (get-square (get-y v1) (get-y v2))))
+)
+
+; Computes the square of x and y vertice values
+(define (get-square v1 v2)
+  (expt (- v2 v1) 2)
+)
+  
+; Returns x-val from a vertex
+(define (get-x v)
+  (car v)
+)
+
+; Returns y-val from a vertex
+(define (get-y v)
+  (cadr v)
 )
